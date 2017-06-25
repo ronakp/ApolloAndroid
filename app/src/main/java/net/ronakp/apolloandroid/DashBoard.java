@@ -16,7 +16,9 @@ public class DashBoard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
         ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("user13").setValue("hello");
+        Log.e("ref", ref.toString());
+        ref.child("login").setValue("hello");
+
        /* mDatabase = FirebaseDatabase.getInstance();
         ref = mDatabase.getReference("data");
         ref.setValue("1");*/
