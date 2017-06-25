@@ -1,47 +1,49 @@
 package net.ronakp.apolloandroid;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.os.Build;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.MultiProcessor;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.zxing.Result;
 
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements ZXingScannerView.ResultHandler{
 
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private ZXingScannerView mScannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        mScannerView = new ZXingScannerView(this);
+        setContentView(mScannerView);
+        //setContentView(R.layout.activity_home);
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
-
-        } else {
+        if (rc != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
         }
     }
 
-    private void requestCameraPermission() {
-        Log.w("Apollo", "Camera permission is not granted. Requesting permission");
+    @Override
+    public void onResume() {
+        super.onResume();
+        mScannerView.setResultHandler(this);
+        mScannerView.startCamera();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mScannerView.stopCamera();
+    }
+
+    private void requestCameraPermission() {
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -59,7 +61,12 @@ public class Home extends AppCompatActivity {
                         RC_HANDLE_CAMERA_PERM);
             }
         };
-
         findViewById(R.id.conroot).setOnClickListener(listener);
+    }
+
+    @Override
+    public void handleResult(Result result) {
+        Log.v("TEXT", result.getText());
+        mScannerView.resumeCameraPreview(this);
     }
 }
