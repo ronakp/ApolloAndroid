@@ -2,6 +2,7 @@ package net.ronakp.apolloandroid;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -23,6 +24,7 @@ public class Home extends AppCompatActivity implements ZXingScannerView.ResultHa
         super.onCreate(savedInstanceState);
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
+        mScannerView.setAutoFocus(true);
         //setContentView(R.layout.activity_home);
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc != PackageManager.PERMISSION_GRANTED) {
@@ -66,7 +68,10 @@ public class Home extends AppCompatActivity implements ZXingScannerView.ResultHa
 
     @Override
     public void handleResult(Result result) {
-        Log.v("TEXT", result.getText());
-        mScannerView.resumeCameraPreview(this);
+        Intent intent = new Intent(this, DashBoard.class);
+        intent.putExtra("Data", result.getText());
+        startActivity(intent);
+
+        //mScannerView.resumeCameraPreview(this);
     }
 }

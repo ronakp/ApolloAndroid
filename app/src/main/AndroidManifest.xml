@@ -3,6 +3,7 @@
     package="net.ronakp.apolloandroid">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -19,6 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DashBoard"></activity>
     </application>
 
 </manifest>
